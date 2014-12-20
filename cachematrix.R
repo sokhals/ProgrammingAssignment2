@@ -19,39 +19,57 @@
 
 
 makeCacheMatrix <- function(x = matrix()) {
-## 		Sets initial inverse to null and "setMatrix" function sets
-## 		 the new matrix to the list.
- 
-		inverse <- NULL
+	 ## Sets initial inverse to null and "setMatrix" function sets
+	 ## the new matrix to the list.
+ 		inverse <- NULL
         	setMatrix <- function(y) {
            			x <<- y
                 		inverse <<- NULL
         	}
 		getMatrix <- function() x
-##--------->sets the inverse into list for further caching.
+
+	 ## sets the inverse into list for further caching.
 		setInverse <- function(solve) inverse <<- solve
-##--------->It retrieves the inverse 
-        	getInverse <- function() inverse
-        	list(setMatrix = setMatrix, getMatrix = getMatrix,
+
+	 ## It retrieves the inverse form the list.
+		getInverse <- function() inverse
+
+	 ## List containing all the information from which the inverse, matrix 
+	 ## will be extracted and the new inverse and new matrix will be set into.
+		list(setMatrix = setMatrix, getMatrix = getMatrix,
              	setInverse = setInverse, getInverse = getInverse)
-
-
 }
 
 
-## Write a short comment describing this function
-
+##FUNCTION: This function serves two purposes:
+##		1. It checks for the inverse in the list; If inverse exist it
+##		   the same inverse that is the cached result
+##		2. If inverse for the given matrix comes out to be null; then it 
+##		   returns the computed inverse for it and set it into the list for
+##		   further need.
+		
 cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
+	  ## The inverse from the list for the given matrix is retrieved.
+		inverse <- x$getInverse()
 
- 		inverse <- x$getInverse()
-        	if(!is.null(inverse)) {
+	  ## It checks if the inverse is not null; that is it has been already
+	  ## computed, the previous stored inverse is returned.
+		if(!is.null(inverse)) {
             		message("Cached inverse of matrix is returned")
 		          	return(inverse)
         	}
-        	data <- x$getData()
-	      inverse <- solve(data, ...)
-        	x$setInverse(inverse)
+
+	  ## If the inverse comes out to be null; it gets the matrix form the list.
+		matrix <- x$getMatrix()
+
+	  ## It computes the inverse for the matrix.
+		inverse <- solve(matrix, ...)
+
+	  ## It sets the inverse for the matrix into the list
+		x$setInverse(inverse)
+
+	  ## It returns the computed inverse to be printed on console.
         	inverse
 
 }
